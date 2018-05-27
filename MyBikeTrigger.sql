@@ -13,10 +13,10 @@ CREATE FUNCTION checkEnabledCard() RETURNS TRIGGER AS $$
 			END IF;
 			RETURN NEW;
 		ELSE
-			-- Check if there is another card enabled with same customer_id
+			-- Check if there is another card enabled with same customer value
 			PERFORM customer
 				FROM mbt.Card
-				WHERE customer = NEW.customer AND enabled = TRUE;
+				WHERE customer = NEW.customer AND enabled = TRUE AND card_id != new.card_id;
 			IF FOUND THEN RETURN NEW;
 			ELSE 
 				NEW.enabled = TRUE;
