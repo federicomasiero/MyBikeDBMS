@@ -138,7 +138,7 @@ CREATE TABLE mbt.Charge (
 -- Offer
 CREATE TABLE mbt.Offer (
 	offer_id BIGSERIAL PRIMARY KEY,
-	reward_costs INTEGER NOT NULL,
+	reward_cost INTEGER NOT NULL,
 	description TEXT NOT NULL,
 	shop TEXT NOT NULL REFERENCES mbt.Shop (VAT_number) ON UPDATE CASCADE ON DELETE SET NULL
 );
