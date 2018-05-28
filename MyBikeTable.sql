@@ -200,7 +200,7 @@ CREATE TABLE mbt.CreditAction (
 	card TEXT NOT NULL,
 	organization INTEGER NOT NULL,
 	FOREIGN KEY (card, organization) REFERENCES mbt.Card (card_id, organization),
-	charge UUID REFERENCES mbt.Charge (transaction_id) ON UPDATE RESTRICT ON DELETE RESTRICT,
+	charge UUID UNIQUE REFERENCES mbt.Charge (transaction_id) ON UPDATE RESTRICT ON DELETE RESTRICT,
 	hire INTEGER REFERENCES mbt.Hire (hire_id) ON UPDATE RESTRICT ON DELETE RESTRICT,
 	CONSTRAINT CrediConst CHECK ((charge IS NULL AND hire IS NOT NULL) OR (charge IS NOT NULL AND hire IS NULL))
 );

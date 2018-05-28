@@ -119,12 +119,12 @@ CREATE TRIGGER updateCredit
 INSERT INTO mbt.charge (transaction_id, date, payment_method) VALUES ('f2bd45b9-c740-4df7-9fe2-589700939a04', CURRENT_DATE, 1);
 
 -- Insert a credit action for increase money in the Card.
-INSERT INTO mbt.creditaction (value, card, organization, charge, hire) VALUES (5, '1156896998', 3, 'f2bd45b9-c740-4df7-9fe2-589700939a04', NULL)
+INSERT INTO mbt.creditaction (value, card, organization, charge, hire) VALUES (5, '1456896563', 2, 'f2bd45b9-c740-4df7-9fe2-589700939a04', NULL)
 
 -- Insert a credit action for decrease money in the card
-INSERT INTO mbt.creditaction (value, card, organization, charge, hire) VALUES (2, '1156896998', 3, NULL, 1)
+INSERT INTO mbt.creditaction (value, card, organization, charge, hire) VALUES (2, '1456896563', 2, NULL, 1)
 -- Result: OK
-INSERT INTO mbt.creditaction (value, card, organization, charge, hire) VALUES (5, '1156896998', 3, NULL, 1)
+INSERT INTO mbt.creditaction (value, card, organization, charge, hire) VALUES (5, '1456896563', 2, NULL, 1)
 -- Result: OK -> negative current_credit.
 
 --END Query Test
@@ -165,14 +165,94 @@ CREATE TRIGGER updatePoints
 	
 -- Query Test
 
-INSERT INTO mbt.pointsaction (value, card, organization, offer, hire) VALUES (50, '1156896998', 3, NULL, 1);
+INSERT INTO mbt.pointsaction (value, card, organization, offer, hire) VALUES (50, '1456896563', 2, NULL, 1);
 
-INSERT INTO mbt.pointsaction (value, card, organization, offer, hire) VALUES (100, '1156896998', 3, 1, NULL);
+INSERT INTO mbt.pointsaction (value, card, organization, offer, hire) VALUES (100, '1456896563', 2, 1, NULL);
 -- Resutl: RAISE EXCEPTION
 
-INSERT INTO mbt.pointsaction (value, card, organization, offer, hire) VALUES (60, '1156896998', 3, NULL, 1);
+INSERT INTO mbt.pointsaction (value, card, organization, offer, hire) VALUES (60, '1456896563', 2, NULL, 1);
 
-INSERT INTO mbt.pointsaction (value, card, organization, offer, hire) VALUES (100, '1156896998', 3, 1, NULL);
+INSERT INTO mbt.pointsaction (value, card, organization, offer, hire) VALUES (100, '1456896563', 2, 1, NULL);
 -- Result OK
 
 --END Query Test
+
+
+-- Check if current_credit in User's Card is positive
+
+CREATE FUNCTION mbt.checkCurrentCredit() RETURNS TRIGGER AS $$
+	DECLARE
+		credit NUMERIC;
+	BEGIN
+		SELECT current_credit INTO credit
+			FROM mbt.Card
+			WHERE card_id = NEW.card AND organization = NEW.organization;
+		IF (credit > 0) THEN
+			RETURN NEW;
+		ELSE
+			RAISE EXCEPTION 'Card''s credit must be positive.';
+		END IF;
+	END;
+$$ LANGUAGE PLPGSQL;
+
+CREATE TRIGGER checkCreditHire
+	BEFORE INSERT OR UPDATE ON mbt.Hire
+	FOR EACH ROW
+	EXECUTE PROCEDURE mbt.checkCurrentCredit();
+	
+CREATE TRIGGER checkCreditBooking
+	BEFORE INSERT OR UPDATE ON mbt.BookingAction
+	FOR EACH ROW
+	EXECUTE PROCEDURE mbt.checkCurrentCredit();
+	
+-- Query Test
+
+INSERT INTO mbt.Hire (card, organization, bike, docking_point_unlock, date_unlock) VALUES ('1456896563', 2, 2, 8, '2018-05-20 08:22:54+02');
+-- Return Raise because current_credit is negative.
+
+
+-- Check if used Card is enable
+
+CREATE FUNCTION mbt.isCardEnabled() RETURNS TRIGGER AS $$
+	DECLARE
+		isEnabled BOOLEAN;
+	BEGIN
+		SELECT enabled INTO isEnabled
+			FROM mbt.Card
+			WHERE card_id = NEW.card AND organization = NEW.organization;
+		IF (isEnabled) THEN
+			RETURN NEW;
+		ELSE
+			RAISE EXCEPTION 'User''s Card must be enabled.';
+		END IF;
+	END;
+$$ LANGUAGE PLPGSQL;
+
+CREATE TRIGGER enabledCardSubscription
+	BEFORE INSERT OR UPDATE ON mbt.SubscriptionAction
+	FOR EACH ROW
+	EXECUTE PROCEDURE mbt.isCardEnabled();
+	
+CREATE TRIGGER enabledCardHire
+	BEFORE INSERT OR UPDATE ON mbt.Hire
+	FOR EACH ROW
+	EXECUTE PROCEDURE mbt.isCardEnabled();
+		
+CREATE TRIGGER enabledCardPoints
+	BEFORE INSERT OR UPDATE ON mbt.PointsAction
+	FOR EACH ROW
+	EXECUTE PROCEDURE mbt.isCardEnabled();
+	
+CREATE TRIGGER enabledCardCredit
+	BEFORE INSERT OR UPDATE ON mbt.CreditAction
+	FOR EACH ROW
+	EXECUTE PROCEDURE mbt.isCardEnabled();
+	
+CREATE TRIGGER enabledCardBooking
+	BEFORE INSERT OR UPDATE ON mbt.BookingAction
+	FOR EACH ROW
+	EXECUTE PROCEDURE mbt.isCardEnabled();
+	
+-- Query Test
+
+INSERT INTO mbt.Hire (card, organization, bike, docking_point_unlock, date_unlock) VALUES ('1156896998', 3, 2, 8, '2018-05-20 08:22:54+02');
