@@ -7,13 +7,22 @@ CREATE FUNCTION mbt.checkEnabledCard() RETURNS TRIGGER AS $$
 			-- Check if there is another card enabled with same customer_id
 			PERFORM customer
 				FROM mbt.Card
-				WHERE customer = NEW.customer AND enabled = TRUE AND card_id != NEW.card_id;
+				WHERE customer = NEW.customer AND card_id != NEW.card_id AND enabled = TRUE;
 			IF FOUND THEN
-				RAISE EXCEPTION 'Customer % already has an enabled card.', NEW.customer;
+				RAISE EXCEPTION 'Customer % already has an enabled card.', new.customer;
 			END IF;
 			RETURN NEW;
+		ELSE
+			-- Check if there is another card enabled with same customer_id
+			PERFORM customer
+				FROM mbt.Card
+				WHERE customer = NEW.customer AND enabled = TRUE;
+			IF FOUND THEN RETURN NEW;
+			ELSE 
+				NEW.enabled = TRUE;
+				RETURN NEW;
+			END IF;			
 		END IF;
-		RETURN NEW;
 	END;
 $$ LANGUAGE PLPGSQL;
 
