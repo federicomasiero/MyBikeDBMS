@@ -82,7 +82,7 @@ CREATE TABLE mbt.Organization (
 CREATE TABLE mbt.Card (
 	card_id TEXT NOT NULL,
 	organization INTEGER NOT NULL REFERENCES mbt.Organization (org_code) ON UPDATE CASCADE ON DELETE RESTRICT,
-	current_credit MONEY NOT NULL DEFAULT 0 CHECK (current_credit::numeric::float8 >= 0),
+	current_credit MONEY NOT NULL DEFAULT 0,
 	current_points INTEGER NOT NULL DEFAULT 0 CHECK (current_points >= 0),
 	enabled BOOLEAN NOT NULL DEFAULT FALSE,
 	customer UUID NOT NULL REFERENCES mbt.Customer (customer_id) ON UPDATE CASCADE ON DELETE RESTRICT,
