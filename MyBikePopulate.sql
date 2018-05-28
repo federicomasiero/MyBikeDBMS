@@ -84,27 +84,27 @@ INSERT INTO mbt.Card (card_id, organization, enabled, customer) VALUES ('5331654
 -- Hire actions Insert
 INSERT INTO mbt.Hire (card, organization, bike, docking_point_unlock, date_unlock) VALUES ('6697421068', 2, 1, 3, '2018-05-19 10:00:54+02');
 
-UPDATE mbt.Hire SET KM_ride = 4, docking_point_lock = 7, date_lock = '2018-05-19 10:20:03+02' WHERE card = '6697421068' AND organization = 2;
+UPDATE mbt.Hire SET KM_ride = 4, docking_point_lock = 7, date_lock = '2018-05-19 10:20:03+02' WHERE hire_id = 1;
 
 INSERT INTO mbt.Hire (card, organization, bike, docking_point_unlock, date_unlock) VALUES ('9100303147', 1, 2, 8, '2018-05-20 08:22:54+02');
  
-UPDATE mbt.Hire SET KM_ride = 2, docking_point_lock = 9, date_lock = '2018-05-20 08:44:50+02' WHERE card = '9100303147' AND organization = 1;
+UPDATE mbt.Hire SET KM_ride = 2, docking_point_lock = 9, date_lock = '2018-05-20 08:44:50+02' WHERE hire_id = 2;
 
 INSERT INTO mbt.Hire (card, organization, bike, docking_point_unlock, date_unlock) VALUES ('APS6A96998101', 3, 1, 4, '2018-05-26 9:14:06+02'); 
  
-UPDATE mbt.Hire SET KM_ride = 1.32, docking_point_lock = 5, date_lock = '2018-05-26 9:17:00+02' WHERE card = 'APS6A96998101' AND organization = 3;
+UPDATE mbt.Hire SET KM_ride = 1.32, docking_point_lock = 5, date_lock = '2018-05-26 9:17:00+02' WHERE hire_id = 3;
 
 INSERT INTO mbt.Hire (card, organization, bike, docking_point_unlock, date_unlock) VALUES ('4661294024', 1, 5, 1, '2018-05-03 13:02:53+02');
  
-UPDATE mbt.Hire SET KM_ride = 0.52, docking_point_lock = 8, date_lock = '2018-05-03 13:29:11+02' WHERE card = '4661294024' AND organization = 1;
+UPDATE mbt.Hire SET KM_ride = 0.52, docking_point_lock = 8, date_lock = '2018-05-03 13:29:11+02' WHERE hire_id = 4;
 
 INSERT INTO mbt.Hire (card, organization, bike, docking_point_unlock, date_unlock) VALUES ('4661294024', 1, 1, 5, '2018-05-27 22:23:55+02');
 
-UPDATE mbt.Hire SET KM_ride = 3, docking_point_lock = 7, date_lock = '2018-05-27 22:44:00+02' WHERE card = '4661294024' AND organization = 1;
+UPDATE mbt.Hire SET KM_ride = 3, docking_point_lock = 7, date_lock = '2018-05-27 22:44:00+02' WHERE hire_id = 5;
 
 INSERT INTO mbt.Hire (card, organization, bike, docking_point_unlock, date_unlock) VALUES ('5331654267', 2, 2, 1, '2018-05-04 12:03:53+02');
 
-UPDATE mbt.Hire SET KM_ride = 3, docking_point_lock = 2, date_lock = '2018-05-04 12:29:11+02' WHERE card = '5331654267' AND organization = 2;
+UPDATE mbt.Hire SET KM_ride = 3, docking_point_lock = 2, date_lock = '2018-05-04 12:29:11+02' WHERE hire_id = 6;
 
 
 
