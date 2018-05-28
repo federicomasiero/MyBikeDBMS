@@ -1,35 +1,26 @@
 -- The following trigger checks before the insertion or the update of the Card relation
 -- if only one card associated to the customer related to the modification is enable.
 
-CREATE FUNCTION checkEnabledCard() RETURNS TRIGGER AS $$
+CREATE FUNCTION mbt.checkEnabledCard() RETURNS TRIGGER AS $$
 	BEGIN
 		IF(NEW.enabled = TRUE) THEN
 			-- Check if there is another card enabled with same customer_id
 			PERFORM customer
 				FROM mbt.Card
-				WHERE customer = NEW.customer AND enabled = TRUE;
+				WHERE customer = NEW.customer AND enabled = TRUE AND card_id != NEW.card_id;
 			IF FOUND THEN
-				RAISE EXCEPTION 'Customer % already has an enabled card.', new.customer;
+				RAISE EXCEPTION 'Customer % already has an enabled card.', NEW.customer;
 			END IF;
 			RETURN NEW;
-		ELSE
-			-- Check if there is another card enabled with same customer value
-			PERFORM customer
-				FROM mbt.Card
-				WHERE customer = NEW.customer AND enabled = TRUE AND card_id != new.card_id;
-			IF FOUND THEN RETURN NEW;
-			ELSE 
-				NEW.enabled = TRUE;
-				RETURN NEW;
-			END IF;			
 		END IF;
+		RETURN NEW;
 	END;
 $$ LANGUAGE PLPGSQL;
 
 CREATE TRIGGER checkCard
 	BEFORE INSERT OR UPDATE ON mbt.Card
 	FOR EACH ROW
-	EXECUTE PROCEDURE checkEnabledCard();
+	EXECUTE PROCEDURE mbt.checkEnabledCard();
 	
 	
 -- This trigger checks if the value of the attribute Type of the relation Subscription is consistent
@@ -58,3 +49,33 @@ CREATE TRIGGER checkSubscription
 	BEFORE INSERT OR UPDATE ON mbt.Subscription
 	FOR EACH ROW
 	EXECUTE PROCEDURE checkSubTypeDuration();
+	
+
+-- This couple of triggers upon insertion or deletion of a docking point updates the count 
+-- of the column number in the respective docking station.
+	
+CREATE FUNCTION mbt.increaseDockingCount() RETURNS TRIGGER AS $$
+	BEGIN
+		UPDATE mbt.dockingstation SET columns_number = columns_number + 1
+			WHERE docking_station_id = NEW.docking_station;
+		RETURN NEW;
+	END;
+$$ LANGUAGE PLPGSQL;
+
+CREATE TRIGGER insertedDockPoint
+	AFTER INSERT ON mbt.dockingpoint
+	FOR EACH ROW
+	EXECUTE PROCEDURE mbt.increaseDockingCount();
+	
+CREATE FUNCTION mbt.decreaseDockingCount() RETURNS TRIGGER AS $$
+	BEGIN
+		UPDATE mbt.dockingstation SET columns_number = columns_number - 1
+			WHERE docking_station_id = OLD.docking_station;
+		RETURN OLD;
+	END;
+$$ LANGUAGE PLPGSQL;
+
+CREATE TRIGGER deletedDockPoint
+	BEFORE DELETE ON mbt.dockingpoint
+	FOR EACH ROW
+	EXECUTE PROCEDURE mbt.decreaseDockingCount();
