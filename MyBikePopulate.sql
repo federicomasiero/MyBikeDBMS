@@ -20,11 +20,11 @@ INSERT INTO mbt.PaymentMethod VALUES (1, 'credit card');
 INSERT INTO mbt.PaymentMethod VALUES (2, 'bank transfer');
 
 -- Docking Station Insert
-INSERT INTO mbt.DockingStation (station_name, columns_number, latitude, longitude) VALUES ('Sarpi', 12, 45.4170156, 11.8760725);
-INSERT INTO mbt.DockingStation (station_name, columns_number, latitude, longitude) VALUES ('Mazzini', 14, 45.414069, 11.874284);
-INSERT INTO mbt.DockingStation (station_name, columns_number, latitude, longitude) VALUES ('Giotto', 14, 45.413018, 11.87732);
-INSERT INTO mbt.DockingStation (station_name, columns_number, latitude, longitude) VALUES ('Gasometro', 13, 45.411725, 11.882158);
-INSERT INTO mbt.DockingStation (station_name, columns_number, latitude, longitude) VALUES ('Venezia / Colombo', 14, 45.410225, 11.892545);
+INSERT INTO mbt.DockingStation (station_name, columns_number, latitude, longitude) VALUES ('Sarpi', 4, 45.4170156, 11.8760725);
+INSERT INTO mbt.DockingStation (station_name, columns_number, latitude, longitude) VALUES ('Mazzini', 2, 45.414069, 11.874284);
+INSERT INTO mbt.DockingStation (station_name, columns_number, latitude, longitude) VALUES ('Giotto', 3, 45.413018, 11.87732);
+INSERT INTO mbt.DockingStation (station_name, columns_number, latitude, longitude) VALUES ('Gasometro', 1, 45.411725, 11.882158);
+INSERT INTO mbt.DockingStation (station_name, columns_number, latitude, longitude) VALUES ('Venezia / Colombo', 1, 45.410225, 11.892545);
 
 -- Docking Point Insert
 INSERT INTO mbt.DockingPoint (status, docking_station) VALUES ('enabled', 1);
@@ -36,6 +36,8 @@ INSERT INTO mbt.DockingPoint (status, docking_station) VALUES ('disabled', 2);
 INSERT INTO mbt.DockingPoint (status, docking_station) VALUES ('enabled', 3);
 INSERT INTO mbt.DockingPoint (status, docking_station) VALUES ('enabled', 3);
 INSERT INTO mbt.DockingPoint (status, docking_station) VALUES ('enabled', 3);
+INSERT INTO mbt.DockingPoint (status, docking_station) VALUES ('enabled', 4);
+INSERT INTO mbt.DockingPoint (status, docking_station) VALUES ('enabled', 5);
 
 -- Bike Insert
 INSERT INTO mbt.Bike (last_service, status, model) VALUES ('2018-05-22', 'ok', 'typical');
